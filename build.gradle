@@ -115,7 +115,7 @@ publishing {
             artifact javadocJar
             artifact distZip
 
-            groupId 'de.freitag.stefan.raspilcd'
+            groupId 'de.freitag.stefan'
             artifactId 'raspilcd'
             pom.withXml {
                 def root = asNode()
@@ -143,7 +143,7 @@ bintray {
     publish = true
     pkg {
         repo = 'maven'
-        name = 'LedBorg'
+        name = 'RaspiLcd'
         desc = 'Java Library for accessing the RaspiLcd hardware.'
         websiteUrl = 'https://github.com/stefanfreitag/ RaspiLcd/'
         issueTrackerUrl = 'https://github.com/stefanfreitag/RaspiLcd/issues'
