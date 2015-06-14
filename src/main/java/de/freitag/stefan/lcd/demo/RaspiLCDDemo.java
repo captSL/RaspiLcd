@@ -22,12 +22,35 @@ import de.freitag.stefan.lcd.RaspiLCD;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public final class RaspiLCDTest {
-    public static final int DELAY_IN_MS = 1500;
-    private static final Logger LOG = LogManager.getLogger(RaspiLCDTest.class.getCanonicalName());
-    private final static RaspiLCD iFace = new Pi4JRaspiLCD();
+public final class RaspiLCDDemo {
+    /**
+     * The {@link Logger} for this class.
+     */
+    private static final Logger LOG = LogManager.getLogger(RaspiLCDDemo.class.getCanonicalName());
+    /**
+     * Transition delay in milliseconds.
+     */
+    private static final int DELAY_IN_MS = 1500;
+    /**
+     * The RaspiLCD to use.
+     */
+    private final RaspiLCD iFace;
 
-    private static void drawLineTopLeftBottomRight() {
+    public RaspiLCDDemo() {
+        this.iFace = new Pi4JRaspiLCD();
+    }
+
+    /**
+     * Entry point for this application.
+     *
+     * @param args Arguments passed on command line.
+     */
+    public static void main(final String args[]) {
+        final RaspiLCDDemo demo = new RaspiLCDDemo();
+        demo.doMain();
+    }
+
+    private void drawLineTopLeftBottomRight() {
         LOG.info("Draw line from top left to bottom right.");
         final Point start = new Point(1, 1);
         final Point end = new Point(131, 63);
@@ -35,7 +58,7 @@ public final class RaspiLCDTest {
         iFace.writeFramebuffer();
     }
 
-    private static void drawLineBottomLeftTopRight() {
+    private void drawLineBottomLeftTopRight() {
         LOG.info("Draw line from bottom left to top right.");
         final Point start = new Point(1, 63);
         final Point end = new Point(131, 1);
@@ -43,7 +66,7 @@ public final class RaspiLCDTest {
         iFace.writeFramebuffer();
     }
 
-    private static void drawRectangle() {
+    private void drawRectangle() {
         LOG.info("Draw rectangle.");
         final Point topLeft = new Point(1, 1);
         final Point bottomRight = new Point(64, 32);
@@ -52,68 +75,73 @@ public final class RaspiLCDTest {
         iFace.writeFramebuffer();
     }
 
-    private static void drawCenteredCircle() {
+    private void drawCenteredCircle() {
         LOG.info("Draw centered circle.");
         final Point center = new Point(64, 32);
         iFace.drawCircle(center, 30);
         iFace.writeFramebuffer();
     }
 
-    private static void drawCenteredEllipse() {
+    private void drawCenteredEllipse() {
         LOG.info("Draw centered ellipse.");
         final Point center = new Point(64, 32);
         iFace.drawEllipse(center, 10, 20);
         iFace.writeFramebuffer();
     }
 
-    private static void drawCharacter() {
+    private void drawCharacter() {
         LOG.info("Draw character.");
         final Point point = new Point(64, 32);
         iFace.putCharacter(point, 'A');
         iFace.writeFramebuffer();
     }
 
-    private static void drawString() {
+    private void drawString() {
         LOG.info("Draw string.");
         final Point point = new Point(1, 1);
         iFace.putString(point, "My RaspiLCD works!");
         iFace.writeFramebuffer();
     }
 
-    public static void main(String args[]) throws InterruptedException {
-
+    public void doMain(){
         LOG.info("Initializing display.");
         iFace.initialize();
 
-        drawLineTopLeftBottomRight();
-        Thread.sleep(DELAY_IN_MS);
-        iFace.clear();
+        while (true) {
+            try {
+                drawLineTopLeftBottomRight();
+                Thread.sleep(DELAY_IN_MS);
+                iFace.clear();
 
-        drawLineBottomLeftTopRight();
-        Thread.sleep(DELAY_IN_MS);
-        iFace.clear();
+                drawLineBottomLeftTopRight();
+                Thread.sleep(DELAY_IN_MS);
+                iFace.clear();
 
-        drawCenteredCircle();
-        Thread.sleep(DELAY_IN_MS);
-        iFace.clear();
+                drawCenteredCircle();
+                Thread.sleep(DELAY_IN_MS);
+                iFace.clear();
 
-        drawCenteredEllipse();
-        Thread.sleep(DELAY_IN_MS);
-        iFace.clear();
+                drawCenteredEllipse();
+                Thread.sleep(DELAY_IN_MS);
+                iFace.clear();
 
-        drawRectangle();
-        Thread.sleep(DELAY_IN_MS);
-        iFace.clear();
+                drawRectangle();
+                Thread.sleep(DELAY_IN_MS);
+                iFace.clear();
 
-        drawCharacter();
-        Thread.sleep(DELAY_IN_MS);
-        iFace.clear();
+                drawCharacter();
+                Thread.sleep(DELAY_IN_MS);
+                iFace.clear();
 
-        drawString();
-        Thread.sleep(DELAY_IN_MS);
-        iFace.clear();
+                drawString();
+                Thread.sleep(DELAY_IN_MS);
+                iFace.clear();
+            } catch (InterruptedException exception) {
+                Thread.currentThread().interrupt();
+            }
+        }
+        //LOG.info("Shutdown of display.");
+        //iFace.shutdownLCD();
 
-        LOG.info("Shutdown of display.");
-        iFace.shutdownLCD();
     }
 }

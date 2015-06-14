@@ -115,7 +115,7 @@ public class Pi4JRaspiLCD implements RaspiLCD {
     }
 
     @Override
-    public void drawLine(Point start, Point end) {
+    public void drawLine(final Point start, final Point end) {
         if (start == null || end == null) {
             throw new IllegalArgumentException();
         }
@@ -200,7 +200,7 @@ public class Pi4JRaspiLCD implements RaspiLCD {
     /**
      * Draw a bitmap, base point is the top LEFT corner.
      */
-    public void drawBmp(Point topLeft, BufferedImage image) {
+    public void drawBmp(final Point topLeft, final BufferedImage image) {
 
         //BufferedImage image = ImageIO.read(new File("/some.jpg"));
         byte[][] pixels = new byte[image.getWidth()][];
@@ -224,7 +224,7 @@ public class Pi4JRaspiLCD implements RaspiLCD {
     }
 
     private void initializePins() {
-        GpioController gpio = GpioFactory.getInstance();
+        final GpioController gpio = GpioFactory.getInstance();
         upPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_00, PinPullResistance.PULL_UP);
         downPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_05, PinPullResistance.PULL_UP);
         leftPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_UP);
@@ -233,9 +233,9 @@ public class Pi4JRaspiLCD implements RaspiLCD {
     }
 
     private void initializePinListener() {
-        GpioPinListenerDigital pinListener = new GpioPinListenerDigital() {
+        final GpioPinListenerDigital pinListener = new GpioPinListenerDigital() {
             @Override
-            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
+            public void handleGpioPinDigitalStateChangeEvent(final GpioPinDigitalStateChangeEvent event) {
                 Pi4JRaspiLCD.this.fireEvent(event);
             }
         };
@@ -281,7 +281,7 @@ public class Pi4JRaspiLCD implements RaspiLCD {
     }
 
     private void fireEvent(final GpioPinDigitalStateChangeEvent event) {
-        Button button = getButtonFromEvent(event);
+        final Button button = getButtonFromEvent(event);
         if (event.getState().equals(PinState.LOW)) {
             for (ButtonListener listener : this.listeners) {
                 listener.buttonPressed(button);

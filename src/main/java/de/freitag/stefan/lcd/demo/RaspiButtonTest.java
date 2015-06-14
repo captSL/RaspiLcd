@@ -1,5 +1,6 @@
-package de.freitag.stefan.lcd.demo;/*
- * Copyright (C) 2013  Stefan Freitag
+package de.freitag.stefan.lcd.demo;
+/*
+ * Copyright (C) 2013-2015  Stefan Freitag
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -15,7 +16,6 @@ package de.freitag.stefan.lcd.demo;/*
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 import de.freitag.stefan.lcd.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,12 +25,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class RaspiButtonTest extends Thread implements Runnable, ButtonListener {
-    private static Logger LOG = LogManager.getLogger(RaspiButtonTest.class.getName());
+
+    /**
+     * The {@link Logger} for this class.
+     */
+    private static final Logger LOG = LogManager.getLogger(RaspiButtonTest.class.getName());
     private static BufferedReader in;
-    private static boolean quit = false;
+    private static boolean quit;
     private final RaspiLCD iFace = new Pi4JRaspiLCD();
 
-    public static void main(String[] args) {
+    /**
+     * Entry point for this application.
+     * @param args Arguments passed on command line.
+     */
+    public static void main(final String[] args) {
 
 
         in = new BufferedReader(new InputStreamReader(System.in));
@@ -74,6 +82,9 @@ public class RaspiButtonTest extends Thread implements Runnable, ButtonListener 
 
     @Override
     public void buttonPressed(final Button button) {
+        if (button==null) {
+            throw new IllegalArgumentException("Button is null");
+        }
         LOG.info("Button was pressed:" + button);
         iFace.clear();
         final Point point = new Point(1, 1);
@@ -83,6 +94,9 @@ public class RaspiButtonTest extends Thread implements Runnable, ButtonListener 
 
     @Override
     public void buttonReleased(final Button button) {
+        if (button==null) {
+            throw new IllegalArgumentException("Button is null");
+        }
         LOG.info("Button was released:" + button);
         iFace.clear();
         final Point point = new Point(1, 1);
