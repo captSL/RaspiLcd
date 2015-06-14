@@ -39,7 +39,7 @@ compileJava {
     targetCompatibility = 1.8
 }
 
-mainClassName = 'de.freitag.stefan.lcd.demo.RaspiLCDTest'
+mainClassName = 'de.freitag.stefan.lcd.demo.RaspiLCDDemo'
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
@@ -156,7 +156,7 @@ bintray {
             vcsTag = project.version
             gpg {
                 sign = true
-                passphrase = gpg_passphrase
+                passphrase = project.hasProperty('gpg_passphrase') ? gpg_passphrase : ''
             }
         }
     }
