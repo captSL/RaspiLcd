@@ -17,19 +17,30 @@
 
 package de.freitag.stefan.lcd;
 
-public class Point {
+/**
+ * A point consisting of an x and y position.
+ *
+ * @author Stefan Freitag
+ */
+public final class Point {
+    /**
+     * The x position of this {@link Point}.
+     */
     private final int xPosition;
+    /**
+     * The y position of this {@link Point}.
+     */
     private final int yPosition;
 
     /**
      * Creates a new {@code Point} identified by its x and y position.
      *
-     * @param x x-value of the point.
-     * @param y y-value of the point.
+     * @param xPosition x-value of the point.
+     * @param yPosition y-value of the point.
      */
-    public Point(final int x, final int y) {
-        xPosition = x;
-        yPosition = y;
+    public Point(final int xPosition, final int yPosition) {
+        this.xPosition = xPosition;
+        this.yPosition = yPosition;
     }
 
     /**
@@ -37,8 +48,8 @@ public class Point {
      *
      * @return x part of the {@code Point}.
      */
-    public final int getXCoordinate() {
-        return xPosition;
+    public int getXCoordinate() {
+        return this.xPosition;
     }
 
     /**
@@ -47,15 +58,15 @@ public class Point {
      * @return y part of the {@code Point}.
      */
 
-    public final int getYCoordinate() {
-        return yPosition;
+    public int getYCoordinate() {
+        return this.yPosition;
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         return "Point{" +
-                "xPosition=" + xPosition +
-                ", yPosition=" + yPosition +
+                "xPosition=" + this.xPosition +
+                ", yPosition=" + this.yPosition +
                 '}';
     }
 }
