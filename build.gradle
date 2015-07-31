@@ -145,7 +145,7 @@ bintray {
         repo = 'maven'
         name = 'RaspiLcd'
         desc = 'Java Library for accessing the RaspiLcd hardware.'
-        websiteUrl = 'https://github.com/stefanfreitag/ RaspiLcd/'
+        websiteUrl = 'https://github.com/stefanfreitag/RaspiLcd/'
         issueTrackerUrl = 'https://github.com/stefanfreitag/RaspiLcd/issues'
         vcsUrl = 'git://github.com/stefanfreitag/RaspiLcd.git'
         licenses = ['MIT']
