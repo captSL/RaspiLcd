@@ -21,7 +21,7 @@ plugins {
 
 
 project.description = project_description
-project.version = '1.2-RELEASE'
+project.version = '1.3-SNAPSHOT'
 
 repositories {
     mavenCentral()

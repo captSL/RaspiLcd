@@ -21,6 +21,8 @@ import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import de.freitag.stefan.lcd.fonts.Terminal6x8;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -59,9 +61,19 @@ public class Pi4JRaspiLCD implements RaspiLCD {
         initializePinListener();
     }
 
+    /**
+     * Return the {@link Logger} for this class.
+     *
+     * @return the {@link Logger} for this class.
+     */
+    @SuppressWarnings("unused")
+    private static Logger getLogger() {
+        return LogManager.getLogger(Pi4JRaspiLCD.class.getCanonicalName());
+    }
+
     @Override
-    public PinState setBacklight(final boolean newStatus) {
-        if (newStatus) {
+    public PinState setBacklight(final boolean status) {
+        if (status) {
             RaspiLCDPin.LED.high();
         } else {
             RaspiLCDPin.LED.low();
@@ -83,7 +95,7 @@ public class Pi4JRaspiLCD implements RaspiLCD {
     @Override
     public void setContrast(final int contrast) {
         if (contrast < 0 || contrast > 63) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Contrast is out of range. Allowed value [0,63]. Received: " + contrast);
         }
         LCD.getInstance().writeCommand((byte) 0x81);
         LCD.getInstance().writeCommand((byte) contrast);
@@ -191,17 +203,16 @@ public class Pi4JRaspiLCD implements RaspiLCD {
     @Override
     public void drawEllipse(final Point center, final int a, final int b) {
         if (center == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Point is null");
         }
         LCD.getInstance().drawEllipse(center.getXCoordinate(), center.getYCoordinate(), a, b);
     }
 
-
-    /**
-     * Draw a bitmap, base point is the top LEFT corner.
-     */
+    @Override
     public void drawBmp(final Point topLeft, final BufferedImage image) {
-
+        if (topLeft == null) {
+            throw new IllegalArgumentException("Point is null");
+        }
         //BufferedImage image = ImageIO.read(new File("/some.jpg"));
         byte[][] pixels = new byte[image.getWidth()][];
 
@@ -218,7 +229,7 @@ public class Pi4JRaspiLCD implements RaspiLCD {
     @Override
     public void drawBmp(final Point topLeft, final byte[][] pixels) {
         if (topLeft == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Point is null");
         }
         LCD.getInstance().drawBitmap(topLeft.getXCoordinate(), topLeft.getYCoordinate(), pixels);
     }
@@ -246,17 +257,13 @@ public class Pi4JRaspiLCD implements RaspiLCD {
         centerPin.addListener(pinListener);
     }
 
-    /**
-     * Add a {@code ButtonListener} that will be notified about pressed/ released {@code Button}s.
-     *
-     * @param listener A  {@code ButtonListener}.
-     */
     @Override
     public void addButtonListener(final ButtonListener listener) {
         if (listener == null) {
-            return;
+            throw new IllegalArgumentException("ButtonListener is null");
         }
         if (this.listeners.contains(listener)) {
+            getLogger().warn("ButtonListener was already added before. Not adding again");
             return;
         }
 
@@ -264,15 +271,10 @@ public class Pi4JRaspiLCD implements RaspiLCD {
 
     }
 
-    /**
-     * Remove a {@code ButtonListener}.
-     *
-     * @param listener A  {@code ButtonListener}.
-     */
     @Override
     public void removeButtonListener(final ButtonListener listener) {
         if (listener == null) {
-            return;
+            throw new IllegalArgumentException("ButtonListener is null");
         }
         if (this.listeners.contains(listener)) {
             this.listeners.remove(listener);
@@ -310,6 +312,5 @@ public class Pi4JRaspiLCD implements RaspiLCD {
         return null;
 
     }
-
 }
 

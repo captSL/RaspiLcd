@@ -24,6 +24,7 @@ import java.util.List;
 
 /**
  * Definition of the methods that a RaspiLCD implementation needs to support.
+ * @author Stefan Freitag
  */
 public interface RaspiLCD {
 
@@ -41,6 +42,7 @@ public interface RaspiLCD {
      * Set the contrast of the display.
      *
      * @param contrast The new contrast. Valid range: 0 - 63.
+     * @throws IllegalArgumentException if {@code contrast} is not range.
      */
     void setContrast(int contrast);
 
@@ -54,6 +56,7 @@ public interface RaspiLCD {
      *
      * @param topLeft top left point of the image on the display.
      * @param image   buffered image to display.
+     * @throws IllegalArgumentException if {@code topLeft} is {@code null}.
      */
     void drawBmp(Point topLeft, BufferedImage image);
 
@@ -62,6 +65,7 @@ public interface RaspiLCD {
      *
      * @param topLeft top left point of the image on the display.
      * @param pixels  pixel array to display,
+     * @throws IllegalArgumentException if {@code topLeft} is {@code null}.
      */
     void drawBmp(Point topLeft, byte[][] pixels);
 
@@ -92,10 +96,10 @@ public interface RaspiLCD {
     /**
      * Enable/ disable the backlight of the display.
      *
-     * @param newStatus The new status of the backlight. true= enable backlight, false= disable backlight.
+     * @param status The new status of the backlight. {@code true} enable backlight, {@code false} disable backlight.
      * @return Status of the backlight.
      */
-    PinState setBacklight(boolean newStatus);
+    PinState setBacklight(boolean status);
 
     /**
      * Draw a line defined by start and end point.
@@ -161,13 +165,15 @@ public interface RaspiLCD {
      * @param center Center point
      * @param a      Length semi-axis 1.
      * @param b      Length semi-axis 2.
+     * @throws IllegalArgumentException if {@code center} is {@code null}.
      */
     void drawEllipse(Point center, int a, int b);
 
     /**
-     * Add a {@code ButtonListener} to the list of registered listeners.
+     * Add a {@code ButtonListener} that will be notified about pressed/ released {@code Button}s.
      *
-     * @param listener {@code ButtonListener} to add.
+     * @param listener A  {@code ButtonListener}.
+     * @throws IllegalArgumentException if {@code listener} is {@code null}.
      */
     void addButtonListener(ButtonListener listener);
 
@@ -175,6 +181,7 @@ public interface RaspiLCD {
      * Remove a {@link ButtonListener} from the list of registered listeners.
      *
      * @param listener {@link ButtonListener} to delete.
+     * @throws IllegalArgumentException if {@code listener} is {@code null}.
      */
     void removeButtonListener(ButtonListener listener);
 }
