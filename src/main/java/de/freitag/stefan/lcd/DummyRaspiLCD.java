@@ -79,31 +79,52 @@ public class DummyRaspiLCD implements RaspiLCD {
 
     @Override
     public void putCharacter(final Point point, final Character character) {
+        if (point == null) {
+            throw new IllegalArgumentException("Point is null");
+        }
+        if (character == null) {
+            throw new IllegalArgumentException("Character is null");
+        }
         getLogger().info("Put char " + character + " at point " + point);
     }
 
     @Override
-    public void putString(final Point point, final String string) {
-        getLogger().info("Put string " + string + " at point " + point);
+    public void putString(final Point point, final String text) {
+        if (point == null) {
+            throw new IllegalArgumentException("Point is null");
+        }
+        if (text == null) {
+            throw new IllegalArgumentException("Text is null");
+        }
+        getLogger().info("Put text " + text + " at point " + point);
     }
 
     @Override
     public void putPixel(final Point point, final boolean color) {
+        if (point == null) {
+            throw new IllegalArgumentException("Point is null");
+        }
         getLogger().info("Put pixel " + color + " at point " + point);
     }
 
     @Override
     public void drawLine(final Point start, final Point end) {
-        if (start == null || end == null) {
-            throw new IllegalArgumentException();
+        if (start == null) {
+            throw new IllegalArgumentException("Start point is null");
+        }
+        if (end == null) {
+            throw new IllegalArgumentException("End point is null");
         }
         getLogger().info("Draw line from " + start + " to " + end);
     }
 
     @Override
     public void drawCircle(final Point center, final int radius) {
-        if (center == null || radius < 0) {
-            throw new IllegalArgumentException();
+        if (center == null) {
+            throw new IllegalArgumentException("Point is null");
+        }
+        if (radius < 0) {
+            throw new IllegalArgumentException("Radius must be equal to or greater than 0");
         }
         getLogger().info("Draw circle with center " + center + " and radius " + radius);
     }
@@ -193,4 +214,3 @@ public class DummyRaspiLCD implements RaspiLCD {
 
     }
 }
-

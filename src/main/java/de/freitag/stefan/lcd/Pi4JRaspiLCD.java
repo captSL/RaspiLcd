@@ -57,8 +57,7 @@ public class Pi4JRaspiLCD implements RaspiLCD {
     public Pi4JRaspiLCD() {
         super();
         listeners = new ArrayList<>();
-        initializePins();
-        initializePinListener();
+
     }
 
     /**
@@ -83,6 +82,8 @@ public class Pi4JRaspiLCD implements RaspiLCD {
 
     @Override
     public void initialize() {
+        this.initializePins();
+        this.initializePinListener();
         LCD.getInstance().init();
     }
 
@@ -108,36 +109,57 @@ public class Pi4JRaspiLCD implements RaspiLCD {
 
     @Override
     public void putCharacter(final Point point, final Character character) {
+        if (point == null) {
+            throw new IllegalArgumentException("Point is null");
+        }
+        if (character == null) {
+            throw new IllegalArgumentException("Character is null");
+        }
         LCD.getInstance().printXY(point, character);
     }
 
     @Override
-    public void putString(final Point point, final String string) {
+    public void putString(final Point point, final String text) {
+        if (point == null) {
+            throw new IllegalArgumentException("Point is null");
+        }
+        if (text == null) {
+            throw new IllegalArgumentException("Text is null");
+        }
         Point tmp;
         //Font muss bekannt sein
-        for (int i = 0; i < string.length(); i++) {
+        for (int i = 0; i < text.length(); i++) {
             tmp = new Point(point.getXCoordinate() + (i * Terminal6x8.font_terminal_6x8[1]), point.getYCoordinate());
-            LCD.getInstance().printXY(tmp, string.charAt(i));
+            LCD.getInstance().printXY(tmp, text.charAt(i));
         }
     }
 
     @Override
     public void putPixel(final Point point, final boolean color) {
+        if (point == null) {
+            throw new IllegalArgumentException("Point is null");
+        }
         LCD.getInstance().PutPixel(point, color);
     }
 
     @Override
     public void drawLine(final Point start, final Point end) {
-        if (start == null || end == null) {
-            throw new IllegalArgumentException();
+        if (start == null) {
+            throw new IllegalArgumentException("Start point is null");
+        }
+        if (end == null) {
+            throw new IllegalArgumentException("End point is null");
         }
         LCD.getInstance().drawLine(start.getXCoordinate(), start.getYCoordinate(), end.getXCoordinate(), end.getYCoordinate());
     }
 
     @Override
     public void drawCircle(final Point center, final int radius) {
-        if (center == null || radius < 0) {
-            throw new IllegalArgumentException();
+        if (center == null) {
+            throw new IllegalArgumentException("Point is null");
+        }
+        if (radius < 0) {
+            throw new IllegalArgumentException("Radius must be equal to or greater than 0");
         }
         LCD.getInstance().drawCircle(center.getXCoordinate(), center.getYCoordinate(), radius);
     }
@@ -192,7 +214,7 @@ public class Pi4JRaspiLCD implements RaspiLCD {
 
     @Override
     public void setFont(String fontName) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        //TODO
     }
 
     @Override
@@ -236,11 +258,11 @@ public class Pi4JRaspiLCD implements RaspiLCD {
 
     private void initializePins() {
         final GpioController gpio = GpioFactory.getInstance();
-        upPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_00, PinPullResistance.PULL_UP);
-        downPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_05, PinPullResistance.PULL_UP);
-        leftPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_UP);
-        rightPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_04, PinPullResistance.PULL_UP);
-        centerPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_03, PinPullResistance.PULL_UP);
+        this.upPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_00, PinPullResistance.PULL_UP);
+        this.downPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_05, PinPullResistance.PULL_UP);
+        this.leftPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_UP);
+        this.rightPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_04, PinPullResistance.PULL_UP);
+        this.centerPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_03, PinPullResistance.PULL_UP);
     }
 
     private void initializePinListener() {

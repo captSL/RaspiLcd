@@ -74,6 +74,7 @@ public interface RaspiLCD {
      *
      * @param point     top left point of the {@link Character}
      * @param character The {@link Character} to display.
+     * @throws IllegalArgumentException if {@code point} or {@code character} is {@code null}.
      */
     void putCharacter(Point point, Character character);
 
@@ -81,15 +82,17 @@ public interface RaspiLCD {
      * Print a text string at a specific {@link Point}.
      *
      * @param point  top left point of the string.
-     * @param string The text string to print.
+     * @param text The text string to print.
+     * @throws IllegalArgumentException if {@code point} or {@code text} is {@code null}.
      */
-    void putString(Point point, String string);
+    void putString(Point point, String text);
 
     /**
      * Put a pixel at the specified point.
      *
      * @param point Point to display/ clear the pixel.
      * @param color Color of the pixel (true: black, false: white)
+     * @throws IllegalArgumentException if {@code point} is {@code null}.
      */
     void putPixel(Point point, boolean color);
 
@@ -106,6 +109,7 @@ public interface RaspiLCD {
      *
      * @param start Start point of the line.
      * @param end   End point of the line.
+     * @throws IllegalArgumentException if {@code start} or {@code end} is {@code null}.
      */
     void drawLine(Point start, Point end);
 
@@ -114,6 +118,7 @@ public interface RaspiLCD {
      *
      * @param center The CENTER point of the circle.
      * @param radius The radius of the circle. Allowed values greater than 0.
+     * @throws IllegalArgumentException if {@code center} is {@code null} or radius negative.
      */
     void drawCircle(Point center, int radius);
 
