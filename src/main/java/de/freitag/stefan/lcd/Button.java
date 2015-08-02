@@ -19,6 +19,7 @@ package de.freitag.stefan.lcd;
 
 /**
  * Buttons available at the RaspiLCD Version 1.
+ * @author Stefan Freitag
  */
 public enum Button {
     /**
@@ -28,19 +29,19 @@ public enum Button {
     /**
      * The center {@code Button}.
      */
-    CENTER("CENTER"),
+    CENTER("Center"),
     /**
      * The right {@code Button}.
      */
-    RIGHT("RIGHT"),
+    RIGHT("Right"),
     /**
      * The up {@code Button}.
      */
-    UP("UP"),
+    UP("Up"),
     /**
      * The down {@code Button}.
      */
-    DOWN("DOWN");
+    DOWN("Down");
 
     private final String label;
 
@@ -60,6 +61,6 @@ public enum Button {
      */
     @Override
     public final String toString() {
-        return label;
+        return this.label;
     }
 }
