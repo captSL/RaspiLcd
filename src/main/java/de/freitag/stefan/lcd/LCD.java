@@ -346,6 +346,12 @@ public final class LCD {
     }
 
     public void printXY(final Point point, final Character charToPrint) {
+        if (point == null) {
+            throw new IllegalArgumentException("Point is null");
+        }
+        if (charToPrint == null) {
+            throw new IllegalArgumentException("Character is null");
+        }
         int ix, iy, y;
         char[] font;
         int pt;
@@ -403,8 +409,12 @@ public final class LCD {
      * @param x0  x-coordinate of the top LEFT corner.
      * @param y0  y-coordinate of the top LEFT corner.
      * @param bmp The two-dimensional byte array to draw.
+     * @throws IllegalArgumentException if {@code bmp} is {@code null}.
      */
     public void drawBitmap(final int x0, final int y0, final byte[][] bmp) {
+        if (bmp == null) {
+            throw new IllegalArgumentException("Byte matrix is null");
+        }
         int width = bmp.length;
         int height = bmp.length;
 
