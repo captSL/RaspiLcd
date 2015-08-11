@@ -40,7 +40,6 @@ public class RaspiButtonTest extends Thread implements Runnable, ButtonListener 
      */
     public static void main(final String[] args) {
 
-
         in = new BufferedReader(new InputStreamReader(System.in));
 
         Thread t = new Thread(new RaspiButtonTest());
@@ -53,8 +52,9 @@ public class RaspiButtonTest extends Thread implements Runnable, ButtonListener 
                 if (quit) {
                     break;
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } catch (InterruptedException exception) {
+                LOG.error(exception);
+
             }
         }
         System.exit(0);
@@ -62,16 +62,14 @@ public class RaspiButtonTest extends Thread implements Runnable, ButtonListener 
 
     public void run() {
         LOG.info("Initializing display.");
-        iFace.initialize();
-
-
-        iFace.addButtonListener(this);
+        this.iFace.initialize();
+        this.iFace.addButtonListener(this);
         String msg = null;
         while (true) {
             try {
                 msg = in.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException exception) {
+                exception.printStackTrace();
             }
             if ("Q".equals(msg)) {
                 quit = true;
@@ -86,10 +84,7 @@ public class RaspiButtonTest extends Thread implements Runnable, ButtonListener 
             throw new IllegalArgumentException("Button is null");
         }
         LOG.info("Button was pressed:" + button);
-        iFace.clear();
-        final Point point = new Point(1, 1);
-        iFace.putString(point, "Pressed " + button.toString());
-        iFace.writeFramebuffer();
+        this.writeText("Pressed " + button.toString());
     }
 
     @Override
@@ -98,10 +93,20 @@ public class RaspiButtonTest extends Thread implements Runnable, ButtonListener 
             throw new IllegalArgumentException("Button is null");
         }
         LOG.info("Button was released:" + button);
-        iFace.clear();
+        this.writeText("Released " + button.toString());
+    }
+
+    /**
+     * Write a line of text to the RaspiLcd.
+     *
+     * @param text The text to write.
+     */
+    private void writeText(final String text) {
+        assert text != null;
+        this.iFace.clear();
         final Point point = new Point(1, 1);
-        iFace.putString(point, "Released " + button.toString());
-        iFace.writeFramebuffer();
+        this.iFace.putString(point, text);
+        this.iFace.writeFramebuffer();
     }
 }
 

@@ -30,6 +30,12 @@ public class Pi4JRaspiLCDTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    public void drawBmpWithNullUpperLeftThrowsIllegalArgumentException() {
+        final Pi4JRaspiLCD lcd = new Pi4JRaspiLCD();
+        lcd.drawBmp(null, new byte[][]{{1}});
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     public void drawEllipseWithNullPointThrowsIllegalArgumentException() {
         final Pi4JRaspiLCD lcd = new Pi4JRaspiLCD();
         lcd.drawEllipse(null, 2, 3);

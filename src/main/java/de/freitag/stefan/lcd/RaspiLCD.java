@@ -65,7 +65,7 @@ public interface RaspiLCD {
      *
      * @param topLeft top left point of the image on the display.
      * @param pixels  pixel array to display,
-     * @throws IllegalArgumentException if {@code topLeft} is {@code null}.
+     * @throws IllegalArgumentException if {@code topLeft} or {@code pixels} is {@code null}.
      */
     void drawBmp(Point topLeft, byte[][] pixels);
 

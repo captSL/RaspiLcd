@@ -17,19 +17,23 @@
 
 package de.freitag.stefan.lcd;
 
-
+/**
+ * Allows receiving information about released and pressed {@link Button}s.
+ */
 public interface ButtonListener {
     /**
-     * Called when a {@code Button} on the RaspiLCD was pressed.
+     * Called when a {@link Button} on the RaspiLCD was pressed.
      *
-     * @param button The pressed {@code Button}.
+     * @param button The pressed {@link Button}.
+     * @throws IllegalArgumentException if {@code button} is {@code null}.
      */
     void buttonPressed(Button button);
 
     /**
-     * Called when a {@code Button} on the RaspiLCD was released.
+     * Called when a {@link Button} on the RaspiLCD was released.
      *
-     * @param button The released {@code Button}.
+     * @param button The released {@link Button}.
+     * @throws IllegalArgumentException if {@code button} is {@code null}.
      */
     void buttonReleased(Button button);
 }

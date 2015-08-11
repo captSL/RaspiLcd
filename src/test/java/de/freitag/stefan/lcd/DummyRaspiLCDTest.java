@@ -30,6 +30,12 @@ public final class DummyRaspiLCDTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    public void drawBmpWithNullUpperLeftThrowsIllegalArgumentException() {
+        final DummyRaspiLCD lcd = new DummyRaspiLCD();
+        lcd.drawBmp(null, new byte[][]{{1}});
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     public void drawEllipseWithNullPointThrowsIllegalArgumentException() {
         final DummyRaspiLCD lcd = new DummyRaspiLCD();
         lcd.drawEllipse(null, 2, 3);
@@ -106,4 +112,5 @@ public final class DummyRaspiLCDTest {
         final DummyRaspiLCD lcd = new DummyRaspiLCD();
         lcd.drawRectangle(new Point(1, 1), null, 1);
     }
+
 }
