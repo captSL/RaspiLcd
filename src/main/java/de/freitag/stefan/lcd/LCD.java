@@ -204,6 +204,9 @@ public final class LCD {
     }
 
     public void PutPixel(final Point point, final boolean color) {
+        if (point == null) {
+            throw new IllegalArgumentException("Point is null.");
+        }
         if ((point.getXCoordinate() < LCD_WIDTH) && (point.getYCoordinate() < LCD_HEIGHT)) {
             if (color) {
                 framebuffer[point.getXCoordinate()][point.getYCoordinate() >> 3] |= (1 << (point.getYCoordinate() & 7));
