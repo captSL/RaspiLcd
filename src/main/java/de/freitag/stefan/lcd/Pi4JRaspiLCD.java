@@ -24,6 +24,7 @@ import de.freitag.stefan.lcd.fonts.Terminal6x8;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -235,17 +236,26 @@ public class Pi4JRaspiLCD implements RaspiLCD {
         if (topLeft == null) {
             throw new IllegalArgumentException("Point is null");
         }
-        //BufferedImage image = ImageIO.read(new File("/some.jpg"));
-        byte[][] pixels = new byte[image.getWidth()][];
+        if (image == null) {
+            throw new IllegalArgumentException("Image is null");
+        }
 
-        for (int x = 0; x < image.getWidth(); x++) {
-            pixels[x] = new byte[image.getHeight()];
 
-            for (int y = 0; y < image.getHeight(); y++) {
-                pixels[x][y] = (byte) (image.getRGB(x, y) == 0xFFFFFFFF ? 0 : 1);
+        final BufferedImage scaledImage = new BufferedImage(LCD.WIDTH, LCD.HEIGHT, image.getType());
+        final Graphics2D g2d = scaledImage.createGraphics();
+        g2d.drawImage(image, 0, 0, LCD.WIDTH, LCD.HEIGHT, null);
+        g2d.dispose();
+
+        final byte[][] pixels = new byte[scaledImage.getWidth()][];
+
+        for (int x = 0; x < scaledImage.getWidth(); x++) {
+            pixels[x] = new byte[scaledImage.getHeight()];
+
+            for (int y = 0; y < scaledImage.getHeight(); y++) {
+                pixels[x][y] = (byte) (scaledImage.getRGB(x, y) == 0xFFFFFFFF ? 0 : 1);
             }
         }
-        drawBmp(topLeft, pixels);
+        this.drawBmp(topLeft, pixels);
     }
 
     @Override

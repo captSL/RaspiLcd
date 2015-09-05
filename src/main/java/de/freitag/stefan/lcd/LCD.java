@@ -23,24 +23,24 @@ import de.freitag.stefan.lcd.fonts.Terminal6x8;
 /**
  * This class encapsulates the RaspiLCD C-code functions (translated to Java).
  */
-public final class LCD {
+final class LCD {
 
+    /**
+     * Width of the LC display (132 pixel)-
+     */
+    public static final int WIDTH = 132;
+    /**
+     * Height of the LC display (64 pixel).
+     */
+    public static final int HEIGHT = 64;
     /**
      * Offset on the x-axis.
      */
     private static final int LCD_X_OFFSET = 4;
     /**
-     * Width of the LC display (132 pixel)-
-     */
-    private static final int LCD_WIDTH = 132;
-    /**
-     * Height of the LC display (64 pixel).
-     */
-    private static final int LCD_HEIGHT = 64;
-    /**
      * Framebuffer that is written to.
      */
-    private static final byte[][] framebuffer = new byte[LCD_WIDTH][LCD_HEIGHT / 8];
+    private static final byte[][] framebuffer = new byte[WIDTH][HEIGHT / 8];
     private static LCD lcd;
     /**
      * Color of the pen.
@@ -168,8 +168,8 @@ public final class LCD {
      * it to the display.
      */
     public void clearScreen() {
-        for (int y = 0; y < (LCD_HEIGHT / 8); y++) {
-            for (int x = 0; x < LCD_WIDTH; x++) {
+        for (int y = 0; y < (HEIGHT / 8); y++) {
+            for (int x = 0; x < WIDTH; x++) {
                 framebuffer[x][y] = 0;
             }
         }
@@ -179,21 +179,21 @@ public final class LCD {
     public void writeFramebuffer() {
         int x;
         setXY((byte) 0, (byte) 0);
-        for (x = 0; x < LCD_WIDTH; x++) writeData(framebuffer[x][0]);
+        for (x = 0; x < WIDTH; x++) writeData(framebuffer[x][0]);
         setXY((byte) 0, (byte) 1);
-        for (x = 0; x < LCD_WIDTH; x++) writeData(framebuffer[x][1]);
+        for (x = 0; x < WIDTH; x++) writeData(framebuffer[x][1]);
         setXY((byte) 0, (byte) 2);
-        for (x = 0; x < LCD_WIDTH; x++) writeData(framebuffer[x][2]);
+        for (x = 0; x < WIDTH; x++) writeData(framebuffer[x][2]);
         setXY((byte) 0, (byte) 3);
-        for (x = 0; x < LCD_WIDTH; x++) writeData(framebuffer[x][3]);
+        for (x = 0; x < WIDTH; x++) writeData(framebuffer[x][3]);
         setXY((byte) 0, (byte) 4);
-        for (x = 0; x < LCD_WIDTH; x++) writeData(framebuffer[x][4]);
+        for (x = 0; x < WIDTH; x++) writeData(framebuffer[x][4]);
         setXY((byte) 0, (byte) 5);
-        for (x = 0; x < LCD_WIDTH; x++) writeData(framebuffer[x][5]);
+        for (x = 0; x < WIDTH; x++) writeData(framebuffer[x][5]);
         setXY((byte) 0, (byte) 6);
-        for (x = 0; x < LCD_WIDTH; x++) writeData(framebuffer[x][6]);
+        for (x = 0; x < WIDTH; x++) writeData(framebuffer[x][6]);
         setXY((byte) 0, (byte) 7);
-        for (x = 0; x < LCD_WIDTH; x++) writeData(framebuffer[x][7]);
+        for (x = 0; x < WIDTH; x++) writeData(framebuffer[x][7]);
     }
 
     void setXY(byte x, final byte ypage) {
@@ -204,7 +204,7 @@ public final class LCD {
     }
 
     public void PutPixel(final Point point, final boolean color) {
-        if ((point.getXCoordinate() < LCD_WIDTH) && (point.getYCoordinate() < LCD_HEIGHT)) {
+        if ((point.getXCoordinate() < WIDTH) && (point.getYCoordinate() < HEIGHT)) {
             if (color) {
                 framebuffer[point.getXCoordinate()][point.getYCoordinate() >> 3] |= (1 << (point.getYCoordinate() & 7));
             } else {
@@ -260,7 +260,7 @@ public final class LCD {
     }
 
     public void PutPixel(final int x, final int y, final boolean color) {
-        if ((x < LCD_WIDTH) && (y < LCD_HEIGHT)) {
+        if ((x < WIDTH) && (y < HEIGHT)) {
             if (color) {
                 framebuffer[x][y >> 3] |= (1 << (y & 7));
             } else {
@@ -404,7 +404,6 @@ public final class LCD {
 
     /**
      * Draw a bitmap.
-     * TODO
      *
      * @param x0  x-coordinate of the top LEFT corner.
      * @param y0  y-coordinate of the top LEFT corner.
@@ -415,12 +414,13 @@ public final class LCD {
         if (bmp == null) {
             throw new IllegalArgumentException("Byte matrix is null");
         }
-        int width = bmp.length;
-        int height = bmp.length;
+
+        final int width = bmp.length;
+        final int height = bmp[0].length;
 
         for (int iy = 0; iy < height; iy++) {
             for (int ix = 0; ix < width; ix++) {
-                byte b = (byte) (1 << (iy & 7));
+                final byte b = (byte) (1 << (iy & 7));
                 if (bmp[ix][iy] == 1) {
                     PutPixel(x0 + ix, y0 + iy, true);
                 } else {
