@@ -24,8 +24,7 @@ package de.freitag.stefan.lcd.fonts;
  * <li>width: 6 (monospaced font)</li>
  * <li>height: 8 pixel</li>
  * </ul>
- * <p>
- * <p>
+ *
  * Data:
  * <ul>
  * <li>Length: 8 bits</li>
