@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 
 public class RaspiButtonTest extends Thread implements Runnable, ButtonListener {
 
@@ -31,17 +32,25 @@ public class RaspiButtonTest extends Thread implements Runnable, ButtonListener 
      */
     private static final Logger LOG = LogManager.getLogger(RaspiButtonTest.class.getName());
     private static BufferedReader in;
-    private static boolean quit;
     private final RaspiLCD iFace = new Pi4JRaspiLCD();
+    private boolean quit;
 
     /**
      * Entry point for this application.
      * @param args Arguments passed on command line.
      */
     public static void main(final String[] args) {
+        final RaspiButtonTest test = new RaspiButtonTest();
+        test.doMain();
+    }
 
-
-        in = new BufferedReader(new InputStreamReader(System.in));
+    private void doMain() {
+        try {
+            in = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
+        } catch (UnsupportedEncodingException exception) {
+            LOG.info("Found unsupported encoding.", exception);
+            System.exit(-1);
+        }
 
         Thread t = new Thread(new RaspiButtonTest());
         t.start();
@@ -53,8 +62,8 @@ public class RaspiButtonTest extends Thread implements Runnable, ButtonListener 
                 if (quit) {
                     break;
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } catch (InterruptedException exception) {
+                Thread.currentThread().interrupt();
             }
         }
         System.exit(0);

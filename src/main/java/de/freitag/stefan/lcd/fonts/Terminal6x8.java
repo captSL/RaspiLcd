@@ -33,7 +33,7 @@ package de.freitag.stefan.lcd.fonts;
  * Create time: 10:33 11-02-2012  by info@emsystech.de with BitFontCreator
  */
 public final class Terminal6x8 {
-    public final static char font_terminal_6x8[] = {
+    public final static char BYTES[] = {
 
             6,  /* character size in bytes */
             6,  /* character width in pixel */

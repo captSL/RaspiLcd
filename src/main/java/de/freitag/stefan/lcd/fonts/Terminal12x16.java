@@ -33,7 +33,7 @@ package de.freitag.stefan.lcd.fonts;
  */
 public final class Terminal12x16 {
 
-    public final static char font_terminal_12x16[] = {
+    public final static char BYTES[] = {
 
             24, /* character size in bytes */
             12, /* character width in pixel */

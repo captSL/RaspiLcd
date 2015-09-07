@@ -130,7 +130,7 @@ public class Pi4JRaspiLCD implements RaspiLCD {
         Point tmp;
         //Font muss bekannt sein
         for (int i = 0; i < text.length(); i++) {
-            tmp = new Point(point.getXCoordinate() + (i * Terminal6x8.font_terminal_6x8[1]), point.getYCoordinate());
+            tmp = new Point(point.getXCoordinate() + (i * Terminal6x8.BYTES[1]), point.getYCoordinate());
             LCD.getInstance().printXY(tmp, text.charAt(i));
         }
     }

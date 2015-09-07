@@ -45,11 +45,11 @@ final class LCD {
     /**
      * Color of the pen.
      */
-    private static boolean PenColor = true;
+    private boolean penColor = true;
     /**
      * Fill color.
      */
-    private static int FillColor = 0;
+    private int fillColor = 0;
 
     private Font font;
 
@@ -228,10 +228,10 @@ final class LCD {
         long err = b2 - (2 * b - 1) * a2, e2;
 
         do {
-            PutPixel(xm + dx, ym + dy, PenColor);
-            PutPixel(xm - dx, ym + dy, PenColor);
-            PutPixel(xm - dx, ym - dy, PenColor);
-            PutPixel(xm + dx, ym - dy, PenColor);
+            PutPixel(xm + dx, ym + dy, penColor);
+            PutPixel(xm - dx, ym + dy, penColor);
+            PutPixel(xm - dx, ym - dy, penColor);
+            PutPixel(xm + dx, ym - dy, penColor);
 
             e2 = 2 * err;
             if (e2 < (2 * dx + 1) * b2) {
@@ -246,17 +246,17 @@ final class LCD {
         while (dy >= 0);
 
         while (dx++ < a) {
-            PutPixel(xm + dx, ym, PenColor);
-            PutPixel(xm - dx, ym, PenColor);
+            PutPixel(xm + dx, ym, penColor);
+            PutPixel(xm - dx, ym, penColor);
         }
     }
 
     public void setPenColor(final boolean color) {
-        PenColor = color;
+        penColor = color;
     }
 
     public void setFillColor(final int color) {
-        FillColor = color;
+        fillColor = color;
     }
 
     public void PutPixel(final int x, final int y, final boolean color) {
@@ -280,7 +280,7 @@ final class LCD {
                 x0 = x1;
                 x1 = i;
             }     // swap direction
-            while (x0 <= x1) PutPixel(x0++, y0, PenColor);
+            while (x0 <= x1) PutPixel(x0++, y0, penColor);
         } else if (x0 == x1)        // vertikale Linie
         {
             if (y0 > y1) {
@@ -288,7 +288,7 @@ final class LCD {
                 y0 = x1;
                 y1 = i;
             }     // swap direction
-            while (y0 <= y1) PutPixel(x0, y0++, PenColor);
+            while (y0 <= y1) PutPixel(x0, y0++, penColor);
         } else        // Bresenham Algorithmus
         {
             dx = Math.abs(x1 - x0);
@@ -319,10 +319,10 @@ final class LCD {
         int x = 0;
         int y = radius;
 
-        PutPixel(x0, y0 + radius, PenColor);
-        PutPixel(x0, y0 - radius, PenColor);
-        PutPixel(x0 + radius, y0, PenColor);
-        PutPixel(x0 - radius, y0, PenColor);
+        PutPixel(x0, y0 + radius, penColor);
+        PutPixel(x0, y0 - radius, penColor);
+        PutPixel(x0 + radius, y0, penColor);
+        PutPixel(x0 - radius, y0, penColor);
 
         while (x < y) {
             if (f >= 0) {
@@ -334,14 +334,14 @@ final class LCD {
             ddF_x += 2;
             f += ddF_x + 1;
 
-            PutPixel(x0 + x, y0 + y, PenColor);
-            PutPixel(x0 - x, y0 + y, PenColor);
-            PutPixel(x0 + x, y0 - y, PenColor);
-            PutPixel(x0 - x, y0 - y, PenColor);
-            PutPixel(x0 + y, y0 + x, PenColor);
-            PutPixel(x0 - y, y0 + x, PenColor);
-            PutPixel(x0 + y, y0 - x, PenColor);
-            PutPixel(x0 - y, y0 - x, PenColor);
+            PutPixel(x0 + x, y0 + y, penColor);
+            PutPixel(x0 - x, y0 + y, penColor);
+            PutPixel(x0 + x, y0 - y, penColor);
+            PutPixel(x0 - x, y0 - y, penColor);
+            PutPixel(x0 + y, y0 + x, penColor);
+            PutPixel(x0 - y, y0 + x, penColor);
+            PutPixel(x0 + y, y0 - x, penColor);
+            PutPixel(x0 - y, y0 - x, penColor);
         }
     }
 
@@ -362,11 +362,11 @@ final class LCD {
 
 
         /**if(FontNumber == 1)   font = font_fixedsys_8x15;
-         else if(FontNumber == 2)  font= font_lucida_10x16;
-         else if(FontNumber == 3)  font = font_terminal_12x16;
-         else					   font = font_terminal_6x8;
+         else if(FontNumber == 2)  font= BYTES;
+         else if(FontNumber == 3)  font = BYTE;
+         else					   font = BYTES;
          */
-        font = Terminal6x8.font_terminal_6x8;
+        font = Terminal6x8.BYTES;
         char_size = font[0];
         char_width = font[1];
         char_height = font[2];

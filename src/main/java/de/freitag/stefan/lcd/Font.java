@@ -27,7 +27,7 @@ enum Font {
     public char[] getFont(final String font) {
         this.font = font;
         if (font.equalsIgnoreCase("LUCIDA10x16"))
-            return Lucida10x16.font_lucida_10x16;
+            return Lucida10x16.BYTES;
         return null;
     }
 }
