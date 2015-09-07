@@ -40,7 +40,7 @@ final class LCD {
     /**
      * Framebuffer that is written to.
      */
-    private static final byte[][] framebuffer = new byte[WIDTH][HEIGHT / 8];
+    private static final byte[][] FRAMEBUFFER = new byte[WIDTH][HEIGHT / 8];
     private static LCD lcd;
     /**
      * Color of the pen.
@@ -57,8 +57,9 @@ final class LCD {
     }
 
     public static LCD getInstance() {
-        if (lcd == null)
+        if (lcd == null) {
             lcd = new LCD();
+        }
         return lcd;
     }
 
@@ -170,7 +171,7 @@ final class LCD {
     public void clearScreen() {
         for (int y = 0; y < (HEIGHT / 8); y++) {
             for (int x = 0; x < WIDTH; x++) {
-                framebuffer[x][y] = 0;
+                FRAMEBUFFER[x][y] = 0;
             }
         }
         writeFramebuffer();
@@ -179,21 +180,37 @@ final class LCD {
     public void writeFramebuffer() {
         int x;
         setXY((byte) 0, (byte) 0);
-        for (x = 0; x < WIDTH; x++) writeData(framebuffer[x][0]);
+        for (x = 0; x < WIDTH; x++) {
+            writeData(FRAMEBUFFER[x][0]);
+        }
         setXY((byte) 0, (byte) 1);
-        for (x = 0; x < WIDTH; x++) writeData(framebuffer[x][1]);
+        for (x = 0; x < WIDTH; x++) {
+            writeData(FRAMEBUFFER[x][1]);
+        }
         setXY((byte) 0, (byte) 2);
-        for (x = 0; x < WIDTH; x++) writeData(framebuffer[x][2]);
+        for (x = 0; x < WIDTH; x++) {
+            writeData(FRAMEBUFFER[x][2]);
+        }
         setXY((byte) 0, (byte) 3);
-        for (x = 0; x < WIDTH; x++) writeData(framebuffer[x][3]);
+        for (x = 0; x < WIDTH; x++) {
+            writeData(FRAMEBUFFER[x][3]);
+        }
         setXY((byte) 0, (byte) 4);
-        for (x = 0; x < WIDTH; x++) writeData(framebuffer[x][4]);
+        for (x = 0; x < WIDTH; x++) {
+            writeData(FRAMEBUFFER[x][4]);
+        }
         setXY((byte) 0, (byte) 5);
-        for (x = 0; x < WIDTH; x++) writeData(framebuffer[x][5]);
+        for (x = 0; x < WIDTH; x++) {
+            writeData(FRAMEBUFFER[x][5]);
+        }
         setXY((byte) 0, (byte) 6);
-        for (x = 0; x < WIDTH; x++) writeData(framebuffer[x][6]);
+        for (x = 0; x < WIDTH; x++) {
+            writeData(FRAMEBUFFER[x][6]);
+        }
         setXY((byte) 0, (byte) 7);
-        for (x = 0; x < WIDTH; x++) writeData(framebuffer[x][7]);
+        for (x = 0; x < WIDTH; x++) {
+            writeData(FRAMEBUFFER[x][7]);
+        }
     }
 
     void setXY(byte x, final byte ypage) {
@@ -206,9 +223,9 @@ final class LCD {
     public void PutPixel(final Point point, final boolean color) {
         if ((point.getXCoordinate() < WIDTH) && (point.getYCoordinate() < HEIGHT)) {
             if (color) {
-                framebuffer[point.getXCoordinate()][point.getYCoordinate() >> 3] |= (1 << (point.getYCoordinate() & 7));
+                FRAMEBUFFER[point.getXCoordinate()][point.getYCoordinate() >> 3] |= (1 << (point.getYCoordinate() & 7));
             } else {
-                framebuffer[point.getXCoordinate()][point.getYCoordinate() >> 3] &= ~(1 << (point.getYCoordinate() & 7));
+                FRAMEBUFFER[point.getXCoordinate()][point.getYCoordinate() >> 3] &= ~(1 << (point.getYCoordinate() & 7));
             }
         }
 
@@ -262,9 +279,9 @@ final class LCD {
     public void PutPixel(final int x, final int y, final boolean color) {
         if ((x < WIDTH) && (y < HEIGHT)) {
             if (color) {
-                framebuffer[x][y >> 3] |= (1 << (y & 7));
+                FRAMEBUFFER[x][y >> 3] |= (1 << (y & 7));
             } else {
-                framebuffer[x][y >> 3] &= ~(1 << (y & 7));
+                FRAMEBUFFER[x][y >> 3] &= ~(1 << (y & 7));
             }
         }
     }
