@@ -52,8 +52,8 @@ public class RaspiButtonTest extends Thread implements Runnable, ButtonListener 
             System.exit(-1);
         }
 
-        Thread t = new Thread(new RaspiButtonTest());
-        t.start();
+        final Thread thread = new Thread(new RaspiButtonTest());
+        thread.start();
         System.out.println("Press a button on the RaspiLCD.");
         System.out.println("Press Q THEN ENTER to terminate.");
         while (true) {

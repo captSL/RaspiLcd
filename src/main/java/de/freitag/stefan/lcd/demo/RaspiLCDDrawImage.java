@@ -32,9 +32,7 @@ public final class RaspiLCDDrawImage {
      * The {@link Logger} for this class.
      */
     private static final Logger LOG = LogManager.getLogger(RaspiLCDDrawImage.class.getCanonicalName());
-    /**
-     * Transition delay in milliseconds.
-     */
+
     private static final int DELAY_IN_MS = 5000;
     /**
      * The RaspiLCD to use.
@@ -52,36 +50,33 @@ public final class RaspiLCDDrawImage {
      */
     public static void main(final String args[]) {
         final RaspiLCDDrawImage demo = new RaspiLCDDrawImage();
-        demo.doMain();
+        demo.doMain(args[0]);
     }
 
 
-    public void doMain() {
+    private void doMain(final String filename) {
         LOG.info("Initializing display.");
         iFace.initialize();
 
-
         try {
-
-            try {
-                final File file = new File("example.bmp");
-                if (!file.isFile()) {
-                    LOG.error(file.getAbsolutePath() + " is not a file.");
-                }
-                BufferedImage img = ImageIO.read(file);
-                this.iFace.drawBmp(new Point(0, 0), img);
-                iFace.writeFramebuffer();
-
-                Thread.sleep(DELAY_IN_MS);
-                iFace.clear();
-            } catch (IOException e) {
-                e.printStackTrace();
+            final File file = new File(filename);
+            if (!file.isFile()) {
+                LOG.error(file.getAbsolutePath() + " is not a file.");
             }
+            final BufferedImage img = ImageIO.read(file);
+            this.iFace.drawBmp(new Point(0, 0), img);
+            iFace.writeFramebuffer();
 
+            Thread.sleep(DELAY_IN_MS);
+            iFace.clear();
+        } catch (IOException exception) {
+            LOG.error(exception.getMessage(), exception);
         } catch (InterruptedException exception) {
             Thread.currentThread().interrupt();
         }
 
-
     }
+
+
 }
+
