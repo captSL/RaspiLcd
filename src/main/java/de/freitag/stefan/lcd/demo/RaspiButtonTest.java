@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 
 public class RaspiButtonTest extends Thread implements Runnable, ButtonListener {
 
@@ -31,19 +32,28 @@ public class RaspiButtonTest extends Thread implements Runnable, ButtonListener 
      */
     private static final Logger LOG = LogManager.getLogger(RaspiButtonTest.class.getName());
     private static BufferedReader in;
-    private static boolean quit;
     private final RaspiLCD iFace = new Pi4JRaspiLCD();
+    private boolean quit;
 
     /**
      * Entry point for this application.
      * @param args Arguments passed on command line.
      */
     public static void main(final String[] args) {
+        final RaspiButtonTest test = new RaspiButtonTest();
+        test.doMain();
+    }
 
-        in = new BufferedReader(new InputStreamReader(System.in));
+    private void doMain() {
+        try {
+            in = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
+        } catch (UnsupportedEncodingException exception) {
+            LOG.info("Found unsupported encoding.", exception);
+            System.exit(-1);
+        }
 
-        Thread t = new Thread(new RaspiButtonTest());
-        t.start();
+        final Thread thread = new Thread(new RaspiButtonTest());
+        thread.start();
         System.out.println("Press a button on the RaspiLCD.");
         System.out.println("Press Q THEN ENTER to terminate.");
         while (true) {
@@ -53,8 +63,7 @@ public class RaspiButtonTest extends Thread implements Runnable, ButtonListener 
                     break;
                 }
             } catch (InterruptedException exception) {
-                LOG.error(exception);
-
+                Thread.currentThread().interrupt();
             }
         }
         System.exit(0);
@@ -62,14 +71,16 @@ public class RaspiButtonTest extends Thread implements Runnable, ButtonListener 
 
     public void run() {
         LOG.info("Initializing display.");
-        this.iFace.initialize();
-        this.iFace.addButtonListener(this);
+        iFace.initialize();
+
+
+        iFace.addButtonListener(this);
         String msg = null;
         while (true) {
             try {
                 msg = in.readLine();
-            } catch (IOException exception) {
-                exception.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
             if ("Q".equals(msg)) {
                 quit = true;
@@ -84,7 +95,10 @@ public class RaspiButtonTest extends Thread implements Runnable, ButtonListener 
             throw new IllegalArgumentException("Button is null");
         }
         LOG.info("Button was pressed:" + button);
-        this.writeText("Pressed " + button.toString());
+        iFace.clear();
+        final Point point = new Point(1, 1);
+        iFace.putString(point, "Pressed " + button.toString());
+        iFace.writeFramebuffer();
     }
 
     @Override
@@ -93,20 +107,10 @@ public class RaspiButtonTest extends Thread implements Runnable, ButtonListener 
             throw new IllegalArgumentException("Button is null");
         }
         LOG.info("Button was released:" + button);
-        this.writeText("Released " + button.toString());
-    }
-
-    /**
-     * Write a line of text to the RaspiLcd.
-     *
-     * @param text The text to write.
-     */
-    private void writeText(final String text) {
-        assert text != null;
-        this.iFace.clear();
+        iFace.clear();
         final Point point = new Point(1, 1);
-        this.iFace.putString(point, text);
-        this.iFace.writeFramebuffer();
+        iFace.putString(point, "Released " + button.toString());
+        iFace.writeFramebuffer();
     }
 }
 

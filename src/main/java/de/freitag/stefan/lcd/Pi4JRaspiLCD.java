@@ -24,6 +24,7 @@ import de.freitag.stefan.lcd.fonts.Terminal6x8;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -129,7 +130,7 @@ public class Pi4JRaspiLCD implements RaspiLCD {
         Point tmp;
         //Font muss bekannt sein
         for (int i = 0; i < text.length(); i++) {
-            tmp = new Point(point.getXCoordinate() + (i * Terminal6x8.font_terminal_6x8[1]), point.getYCoordinate());
+            tmp = new Point(point.getXCoordinate() + (i * Terminal6x8.BYTES[1]), point.getYCoordinate());
             LCD.getInstance().printXY(tmp, text.charAt(i));
         }
     }
@@ -139,7 +140,7 @@ public class Pi4JRaspiLCD implements RaspiLCD {
         if (point == null) {
             throw new IllegalArgumentException("Point is null");
         }
-        LCD.getInstance().PutPixel(point, color);
+        LCD.getInstance().putPixel(point, color);
     }
 
     @Override
@@ -180,12 +181,12 @@ public class Pi4JRaspiLCD implements RaspiLCD {
                         || y > lowerRight.getYCoordinate() - lineWidth
                         || x < upperLeft.getXCoordinate() + lineWidth
                         || x > lowerRight.getXCoordinate() - lineWidth) {
-                    LCD.getInstance().PutPixel(x, y, true);
+                    LCD.getInstance().putPixel(x, y, true);
                 } else {
                     if (fillColor == 0) {
-                        LCD.getInstance().PutPixel(x, y, false);
+                        LCD.getInstance().putPixel(x, y, false);
                     } else if (fillColor == 1) {
-                        LCD.getInstance().PutPixel(x, y, true);
+                        LCD.getInstance().putPixel(x, y, true);
                     }
                 }
                 x++;
@@ -235,17 +236,26 @@ public class Pi4JRaspiLCD implements RaspiLCD {
         if (topLeft == null) {
             throw new IllegalArgumentException("Point is null");
         }
-        //BufferedImage image = ImageIO.read(new File("/some.jpg"));
-        byte[][] pixels = new byte[image.getWidth()][];
+        if (image == null) {
+            throw new IllegalArgumentException("Image is null");
+        }
 
-        for (int x = 0; x < image.getWidth(); x++) {
-            pixels[x] = new byte[image.getHeight()];
 
-            for (int y = 0; y < image.getHeight(); y++) {
-                pixels[x][y] = (byte) (image.getRGB(x, y) == 0xFFFFFFFF ? 0 : 1);
+        final BufferedImage scaledImage = new BufferedImage(LCD.WIDTH, LCD.HEIGHT, image.getType());
+        final Graphics2D g2d = scaledImage.createGraphics();
+        g2d.drawImage(image, 0, 0, LCD.WIDTH, LCD.HEIGHT, null);
+        g2d.dispose();
+
+        final byte[][] pixels = new byte[scaledImage.getWidth()][];
+
+        for (int x = 0; x < scaledImage.getWidth(); x++) {
+            pixels[x] = new byte[scaledImage.getHeight()];
+
+            for (int y = 0; y < scaledImage.getHeight(); y++) {
+                pixels[x][y] = (byte) (scaledImage.getRGB(x, y) == 0xFFFFFFFF ? 0 : 1);
             }
         }
-        drawBmp(topLeft, pixels);
+        this.drawBmp(topLeft, pixels);
     }
 
     @Override
@@ -307,11 +317,11 @@ public class Pi4JRaspiLCD implements RaspiLCD {
     private void fireEvent(final GpioPinDigitalStateChangeEvent event) {
         final Button button = getButtonFromEvent(event);
         if (event.getState().equals(PinState.LOW)) {
-            for (ButtonListener listener : this.listeners) {
+            for (final ButtonListener listener : this.listeners) {
                 listener.buttonPressed(button);
             }
         } else if (event.getState().equals(PinState.HIGH)) {
-            for (ButtonListener listener : this.listeners) {
+            for (final ButtonListener listener : this.listeners) {
                 listener.buttonReleased(button);
             }
         }
