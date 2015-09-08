@@ -24,8 +24,7 @@ package de.freitag.stefan.lcd.fonts;
  * <li>width: 10 pixel (monospaced font)</li>
  * <li>height: 16 pixel</li>
  * </ul>
- * <p>
- * <p>
+ *
  * Data:
  * <ul>
  * <li>Length: 8 bits</li>
@@ -35,7 +34,7 @@ package de.freitag.stefan.lcd.fonts;
  */
 public final class Lucida10x16 {
 
-    public final static char font_lucida_10x16[] = {
+    public final static char BYTES[] = {
 
             20, /* character size in bytes */
             10, /* character width in pixel */

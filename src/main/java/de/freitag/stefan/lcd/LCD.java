@@ -23,33 +23,33 @@ import de.freitag.stefan.lcd.fonts.Terminal6x8;
 /**
  * This class encapsulates the RaspiLCD C-code functions (translated to Java).
  */
-public final class LCD {
+final class LCD {
 
+    /**
+     * Width of the LC display (132 pixel).
+     */
+    public static final int WIDTH = 132;
+    /**
+     * Height of the LC display (64 pixel).
+     */
+    public static final int HEIGHT = 64;
     /**
      * Offset on the x-axis.
      */
     private static final int LCD_X_OFFSET = 4;
     /**
-     * Width of the LC display (132 pixel)-
-     */
-    private static final int LCD_WIDTH = 132;
-    /**
-     * Height of the LC display (64 pixel).
-     */
-    private static final int LCD_HEIGHT = 64;
-    /**
      * Framebuffer that is written to.
      */
-    private static final byte[][] framebuffer = new byte[LCD_WIDTH][LCD_HEIGHT / 8];
+    private static final byte[][] FRAMEBUFFER = new byte[WIDTH][HEIGHT / 8];
     private static LCD lcd;
     /**
      * Color of the pen.
      */
-    private static boolean PenColor = true;
+    private boolean penColor = true;
     /**
      * Fill color.
      */
-    private static int FillColor = 0;
+    private int fillColor = 0;
 
     private Font font;
 
@@ -57,8 +57,9 @@ public final class LCD {
     }
 
     public static LCD getInstance() {
-        if (lcd == null)
+        if (lcd == null) {
             lcd = new LCD();
+        }
         return lcd;
     }
 
@@ -168,9 +169,9 @@ public final class LCD {
      * it to the display.
      */
     public void clearScreen() {
-        for (int y = 0; y < (LCD_HEIGHT / 8); y++) {
-            for (int x = 0; x < LCD_WIDTH; x++) {
-                framebuffer[x][y] = 0;
+        for (int y = 0; y < (HEIGHT / 8); y++) {
+            for (int x = 0; x < WIDTH; x++) {
+                FRAMEBUFFER[x][y] = 0;
             }
         }
         writeFramebuffer();
@@ -179,21 +180,37 @@ public final class LCD {
     public void writeFramebuffer() {
         int x;
         setXY((byte) 0, (byte) 0);
-        for (x = 0; x < LCD_WIDTH; x++) writeData(framebuffer[x][0]);
+        for (x = 0; x < WIDTH; x++) {
+            writeData(FRAMEBUFFER[x][0]);
+        }
         setXY((byte) 0, (byte) 1);
-        for (x = 0; x < LCD_WIDTH; x++) writeData(framebuffer[x][1]);
+        for (x = 0; x < WIDTH; x++) {
+            writeData(FRAMEBUFFER[x][1]);
+        }
         setXY((byte) 0, (byte) 2);
-        for (x = 0; x < LCD_WIDTH; x++) writeData(framebuffer[x][2]);
+        for (x = 0; x < WIDTH; x++) {
+            writeData(FRAMEBUFFER[x][2]);
+        }
         setXY((byte) 0, (byte) 3);
-        for (x = 0; x < LCD_WIDTH; x++) writeData(framebuffer[x][3]);
+        for (x = 0; x < WIDTH; x++) {
+            writeData(FRAMEBUFFER[x][3]);
+        }
         setXY((byte) 0, (byte) 4);
-        for (x = 0; x < LCD_WIDTH; x++) writeData(framebuffer[x][4]);
+        for (x = 0; x < WIDTH; x++) {
+            writeData(FRAMEBUFFER[x][4]);
+        }
         setXY((byte) 0, (byte) 5);
-        for (x = 0; x < LCD_WIDTH; x++) writeData(framebuffer[x][5]);
+        for (x = 0; x < WIDTH; x++) {
+            writeData(FRAMEBUFFER[x][5]);
+        }
         setXY((byte) 0, (byte) 6);
-        for (x = 0; x < LCD_WIDTH; x++) writeData(framebuffer[x][6]);
+        for (x = 0; x < WIDTH; x++) {
+            writeData(FRAMEBUFFER[x][6]);
+        }
         setXY((byte) 0, (byte) 7);
-        for (x = 0; x < LCD_WIDTH; x++) writeData(framebuffer[x][7]);
+        for (x = 0; x < WIDTH; x++) {
+            writeData(FRAMEBUFFER[x][7]);
+        }
     }
 
     void setXY(byte x, final byte ypage) {
@@ -203,15 +220,18 @@ public final class LCD {
         writeCommand((byte) (0xB0 + (ypage & 0x07)));    // set page address
     }
 
-    public void PutPixel(final Point point, final boolean color) {
-        if ((point.getXCoordinate() < LCD_WIDTH) && (point.getYCoordinate() < LCD_HEIGHT)) {
-            if (color) {
-                framebuffer[point.getXCoordinate()][point.getYCoordinate() >> 3] |= (1 << (point.getYCoordinate() & 7));
-            } else {
-                framebuffer[point.getXCoordinate()][point.getYCoordinate() >> 3] &= ~(1 << (point.getYCoordinate() & 7));
-            }
+    /**
+     * Put a pixel at position specified a {@link Point}.
+     *
+     * @param point The {@link Point} to put the pixel at.
+     * @param color
+     * @throws IllegalArgumentException if {@code point} is {@code null}.
+     */
+    public void putPixel(final Point point, final boolean color) {
+        if (point == null) {
+            throw new IllegalArgumentException("Point is null");
         }
-
+        this.putPixel(point.getXCoordinate(), point.getYCoordinate(), color);
     }
 
     /**
@@ -224,14 +244,15 @@ public final class LCD {
      */
     public void drawEllipse(final int xm, final int ym, final int a, final int b) {
         int dx = 0, dy = b;
-        long a2 = a * a, b2 = b * b;
+        final long a2 = a * a;
+        final long b2 = b * b;
         long err = b2 - (2 * b - 1) * a2, e2;
 
         do {
-            PutPixel(xm + dx, ym + dy, PenColor);
-            PutPixel(xm - dx, ym + dy, PenColor);
-            PutPixel(xm - dx, ym - dy, PenColor);
-            PutPixel(xm + dx, ym - dy, PenColor);
+            putPixel(xm + dx, ym + dy, penColor);
+            putPixel(xm - dx, ym + dy, penColor);
+            putPixel(xm - dx, ym - dy, penColor);
+            putPixel(xm + dx, ym - dy, penColor);
 
             e2 = 2 * err;
             if (e2 < (2 * dx + 1) * b2) {
@@ -246,27 +267,45 @@ public final class LCD {
         while (dy >= 0);
 
         while (dx++ < a) {
-            PutPixel(xm + dx, ym, PenColor);
-            PutPixel(xm - dx, ym, PenColor);
+            putPixel(xm + dx, ym, penColor);
+            putPixel(xm - dx, ym, penColor);
         }
     }
 
     public void setPenColor(final boolean color) {
-        PenColor = color;
+        penColor = color;
     }
 
     public void setFillColor(final int color) {
-        FillColor = color;
+        fillColor = color;
     }
 
-    public void PutPixel(final int x, final int y, final boolean color) {
-        if ((x < LCD_WIDTH) && (y < LCD_HEIGHT)) {
-            if (color) {
-                framebuffer[x][y >> 3] |= (1 << (y & 7));
-            } else {
-                framebuffer[x][y >> 3] &= ~(1 << (y & 7));
-            }
+    /**
+     * Put a pixel at position specified by x and y.
+     *
+     * @param xPosition The x position in pixel.
+     * @param yPosition The y position in pixel.
+     * @param color
+     * @throws IllegalArgumentException if
+     *                                  <ul>
+     *                                  <li>{@code xPosition} is not in allowed range of [0, {@link #WIDTH}]</li>
+     *                                  <li>{@code yPosition} is not in allowed range of [0, {@link #HEIGHT}]</li>
+     *                                  </ul>
+     */
+    public void putPixel(final int xPosition, final int yPosition, final boolean color) {
+        if (xPosition < 0 || xPosition >= WIDTH) {
+            throw new IllegalArgumentException("Invalid x position: " + xPosition);
         }
+        if (yPosition < 0 || yPosition >= HEIGHT) {
+            throw new IllegalArgumentException("Invalid y position: " + yPosition);
+        }
+
+        if (color) {
+            FRAMEBUFFER[xPosition][yPosition >> 3] |= (1 << (yPosition & 7));
+        } else {
+            FRAMEBUFFER[xPosition][yPosition >> 3] &= ~(1 << (yPosition & 7));
+        }
+
     }
 
     public void drawLine(int x0, int y0, int x1, int y1) {
@@ -280,7 +319,7 @@ public final class LCD {
                 x0 = x1;
                 x1 = i;
             }     // swap direction
-            while (x0 <= x1) PutPixel(x0++, y0, PenColor);
+            while (x0 <= x1) putPixel(x0++, y0, penColor);
         } else if (x0 == x1)        // vertikale Linie
         {
             if (y0 > y1) {
@@ -288,7 +327,7 @@ public final class LCD {
                 y0 = x1;
                 y1 = i;
             }     // swap direction
-            while (y0 <= y1) PutPixel(x0, y0++, PenColor);
+            while (y0 <= y1) putPixel(x0, y0++, penColor);
         } else        // Bresenham Algorithmus
         {
             dx = Math.abs(x1 - x0);
@@ -297,7 +336,7 @@ public final class LCD {
             sy = y0 < y1 ? 1 : -1;
             err = dx + dy;
             for (; ; ) {
-                PutPixel(x0, y0, true);
+                putPixel(x0, y0, true);
                 if (x0 == x1 && y0 == y1) break;
                 e2 = 2 * err;
                 if (e2 > dy) {
@@ -312,17 +351,27 @@ public final class LCD {
         }
     }
 
+    /**
+     * Draw a circle.
+     * @param x0
+     * @param y0
+     * @param radius Radius of the circle in pixel.
+     * @throws IllegalArgumentException if {@code radius} is less than 0.
+     */
     public void drawCircle(final int x0, final int y0, final int radius) {
+        if (radius<0) {
+            throw new IllegalArgumentException("Radius must be equal to or greater than 0.");
+        }
         int f = 1 - radius;
         int ddF_x = 0;
         int ddF_y = -2 * radius;
         int x = 0;
         int y = radius;
 
-        PutPixel(x0, y0 + radius, PenColor);
-        PutPixel(x0, y0 - radius, PenColor);
-        PutPixel(x0 + radius, y0, PenColor);
-        PutPixel(x0 - radius, y0, PenColor);
+        putPixel(x0, y0 + radius, penColor);
+        putPixel(x0, y0 - radius, penColor);
+        putPixel(x0 + radius, y0, penColor);
+        putPixel(x0 - radius, y0, penColor);
 
         while (x < y) {
             if (f >= 0) {
@@ -334,14 +383,14 @@ public final class LCD {
             ddF_x += 2;
             f += ddF_x + 1;
 
-            PutPixel(x0 + x, y0 + y, PenColor);
-            PutPixel(x0 - x, y0 + y, PenColor);
-            PutPixel(x0 + x, y0 - y, PenColor);
-            PutPixel(x0 - x, y0 - y, PenColor);
-            PutPixel(x0 + y, y0 + x, PenColor);
-            PutPixel(x0 - y, y0 + x, PenColor);
-            PutPixel(x0 + y, y0 - x, PenColor);
-            PutPixel(x0 - y, y0 - x, PenColor);
+            putPixel(x0 + x, y0 + y, penColor);
+            putPixel(x0 - x, y0 + y, penColor);
+            putPixel(x0 + x, y0 - y, penColor);
+            putPixel(x0 - x, y0 - y, penColor);
+            putPixel(x0 + y, y0 + x, penColor);
+            putPixel(x0 - y, y0 + x, penColor);
+            putPixel(x0 + y, y0 - x, penColor);
+            putPixel(x0 - y, y0 - x, penColor);
         }
     }
 
@@ -362,11 +411,11 @@ public final class LCD {
 
 
         /**if(FontNumber == 1)   font = font_fixedsys_8x15;
-         else if(FontNumber == 2)  font= font_lucida_10x16;
-         else if(FontNumber == 3)  font = font_terminal_12x16;
-         else					   font = font_terminal_6x8;
+         else if(FontNumber == 2)  font= BYTES;
+         else if(FontNumber == 3)  font = BYTE;
+         else					   font = BYTES;
          */
-        font = Terminal6x8.font_terminal_6x8;
+        font = Terminal6x8.BYTES;
         char_size = font[0];
         char_width = font[1];
         char_height = font[2];
@@ -388,9 +437,9 @@ public final class LCD {
 
                 byte b = (byte) ((byte) (1 << iy) & (byte) tmp);
                 if (b != 0) {
-                    PutPixel(point.getXCoordinate() + ix, y + iy, true);
+                    putPixel(point.getXCoordinate() + ix, y + iy, true);
                 } else {
-                    PutPixel(point.getXCoordinate() + ix, y + iy, false);
+                    putPixel(point.getXCoordinate() + ix, y + iy, false);
                 }
             }
         }
@@ -404,7 +453,6 @@ public final class LCD {
 
     /**
      * Draw a bitmap.
-     * TODO
      *
      * @param x0  x-coordinate of the top LEFT corner.
      * @param y0  y-coordinate of the top LEFT corner.
@@ -415,16 +463,17 @@ public final class LCD {
         if (bmp == null) {
             throw new IllegalArgumentException("Byte matrix is null");
         }
-        int width = bmp.length;
-        int height = bmp.length;
+
+        final int width = bmp.length;
+        final int height = bmp[0].length;
 
         for (int iy = 0; iy < height; iy++) {
             for (int ix = 0; ix < width; ix++) {
-                byte b = (byte) (1 << (iy & 7));
+                final byte b = (byte) (1 << (iy & 7));
                 if (bmp[ix][iy] == 1) {
-                    PutPixel(x0 + ix, y0 + iy, true);
+                    putPixel(x0 + ix, y0 + iy, true);
                 } else {
-                    PutPixel(x0 + ix, y0 + iy, false);
+                    putPixel(x0 + ix, y0 + iy, false);
                 }
             }
         }
