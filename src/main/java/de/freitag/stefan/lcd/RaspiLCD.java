@@ -178,9 +178,10 @@ public interface RaspiLCD {
      * Add a {@code ButtonListener} that will be notified about pressed/ released {@code Button}s.
      *
      * @param listener A  {@code ButtonListener}.
+     * @return {@code true} if listener was added successfully.
      * @throws IllegalArgumentException if {@code listener} is {@code null}.
      */
-    void addButtonListener(ButtonListener listener);
+    boolean addButtonListener(ButtonListener listener);
 
     /**
      * Remove a {@link ButtonListener} from the list of registered listeners.

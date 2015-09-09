@@ -290,16 +290,16 @@ public class Pi4JRaspiLCD implements RaspiLCD {
     }
 
     @Override
-    public void addButtonListener(final ButtonListener listener) {
+    public boolean addButtonListener(final ButtonListener listener) {
         if (listener == null) {
             throw new IllegalArgumentException("ButtonListener is null");
         }
         if (this.listeners.contains(listener)) {
             getLogger().warn("ButtonListener was already added before. Not adding again");
-            return;
+            return false;
         }
 
-        this.listeners.add(listener);
+        return this.listeners.add(listener);
 
     }
 

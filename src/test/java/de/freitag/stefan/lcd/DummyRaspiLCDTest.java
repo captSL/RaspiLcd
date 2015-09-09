@@ -4,6 +4,8 @@ import org.junit.Test;
 
 import java.awt.image.BufferedImage;
 
+import static org.junit.Assert.assertTrue;
+
 /**
  * Test class for {@link DummyRaspiLCD}.
  *
@@ -15,6 +17,13 @@ public final class DummyRaspiLCDTest {
     public void addButtonListenerWithNullThrowsIllegalArgumentException() {
         final DummyRaspiLCD lcd = new DummyRaspiLCD();
         lcd.addButtonListener(null);
+    }
+
+    @Test
+    public void addButtonListenerAddsListener() {
+        final DummyRaspiLCD lcd = new DummyRaspiLCD();
+        final Listener listener = new Listener();
+        assertTrue(lcd.addButtonListener(listener));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -111,6 +120,31 @@ public final class DummyRaspiLCDTest {
     public void drawRectangleWithNullLowerRightThrowsIllegalArgumentException() {
         final DummyRaspiLCD lcd = new DummyRaspiLCD();
         lcd.drawRectangle(new Point(1, 1), null, 1);
+    }
+
+    private static class Listener implements ButtonListener {
+
+        /**
+         * Called when a {@link Button} on the RaspiLCD was pressed.
+         *
+         * @param button The pressed {@link Button}.
+         * @throws IllegalArgumentException if {@code button} is {@code null}.
+         */
+        @Override
+        public void buttonPressed(Button button) {
+
+        }
+
+        /**
+         * Called when a {@link Button} on the RaspiLCD was released.
+         *
+         * @param button The released {@link Button}.
+         * @throws IllegalArgumentException if {@code button} is {@code null}.
+         */
+        @Override
+        public void buttonReleased(Button button) {
+
+        }
     }
 
 }
