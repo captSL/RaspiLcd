@@ -31,12 +31,15 @@ import java.util.List;
 
 public class Pi4JRaspiLCD implements RaspiLCD {
 
+	private final Revision revision;
+	
     private final List<ButtonListener> listeners;
     private GpioPinDigitalInput upPin;
     private GpioPinDigitalInput downPin;
     private GpioPinDigitalInput leftPin;
     private GpioPinDigitalInput rightPin;
     private GpioPinDigitalInput centerPin;
+    private GpioPinDigitalInput cornerPin; // only on revision two of the board
 
 
     /**
@@ -56,9 +59,20 @@ public class Pi4JRaspiLCD implements RaspiLCD {
      * Constructor for this class.
      */
     public Pi4JRaspiLCD() {
-        super();
-        listeners = new ArrayList<>();
 
+        this(Revision.ONE);
+    }
+    
+    /**
+     * Constructor for this class.
+     * 
+     * @param revision
+     *            RaspiLCD hardware revision
+     */
+    public Pi4JRaspiLCD(Revision revision) {
+        super();
+        this.revision = revision;
+        listeners = new ArrayList<>();
     }
 
     /**
@@ -273,6 +287,9 @@ public class Pi4JRaspiLCD implements RaspiLCD {
         this.leftPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_UP);
         this.rightPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_04, PinPullResistance.PULL_UP);
         this.centerPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_03, PinPullResistance.PULL_UP);
+        if (revision == Revision.TWO) {
+            this.cornerPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_07, PinPullResistance.PULL_UP);
+        }
     }
 
     private void initializePinListener() {
@@ -287,6 +304,9 @@ public class Pi4JRaspiLCD implements RaspiLCD {
         leftPin.addListener(pinListener);
         rightPin.addListener(pinListener);
         centerPin.addListener(pinListener);
+        if (revision == Revision.TWO) {
+            cornerPin.addListener(pinListener);
+        }
     }
 
     @Override
@@ -330,19 +350,34 @@ public class Pi4JRaspiLCD implements RaspiLCD {
 
     private Button getButtonFromEvent(final GpioPinDigitalStateChangeEvent event) {
 
-        if (event.getPin().getName().equalsIgnoreCase(RaspiPin.GPIO_04.getName())) {
-            return Button.RIGHT;
-        } else if (event.getPin().getName().equalsIgnoreCase(RaspiPin.GPIO_03.getName())) {
-            return Button.CENTER;
-        } else if (event.getPin().getName().equalsIgnoreCase(RaspiPin.GPIO_02.getName())) {
-            return Button.LEFT;
-        } else if (event.getPin().getName().equalsIgnoreCase(RaspiPin.GPIO_00.getName())) {
-            return Button.UP;
-        } else if (event.getPin().getName().equalsIgnoreCase(RaspiPin.GPIO_05.getName())) {
-            return Button.DOWN;
+        if (revision == Revision.ONE) {
+            if (event.getPin().getName().equalsIgnoreCase(RaspiPin.GPIO_04.getName())) {
+                return Button.RIGHT;
+            } else if (event.getPin().getName().equalsIgnoreCase(RaspiPin.GPIO_03.getName())) {
+                return Button.CENTER;
+            } else if (event.getPin().getName().equalsIgnoreCase(RaspiPin.GPIO_02.getName())) {
+                return Button.LEFT;
+            } else if (event.getPin().getName().equalsIgnoreCase(RaspiPin.GPIO_00.getName())) {
+                return Button.UP;
+            } else if (event.getPin().getName().equalsIgnoreCase(RaspiPin.GPIO_05.getName())) {
+                return Button.DOWN;
+            }
+        } else if (revision == Revision.TWO) {
+            if (event.getPin().getName().equalsIgnoreCase(RaspiPin.GPIO_07.getName())) {
+                return Button.RIGHT;
+            } else if (event.getPin().getName().equalsIgnoreCase(RaspiPin.GPIO_05.getName())) {
+                return Button.CENTER;
+            } else if (event.getPin().getName().equalsIgnoreCase(RaspiPin.GPIO_04.getName())) {
+                return Button.LEFT;
+            } else if (event.getPin().getName().equalsIgnoreCase(RaspiPin.GPIO_02.getName())) {
+                return Button.UP;
+            } else if (event.getPin().getName().equalsIgnoreCase(RaspiPin.GPIO_03.getName())) {
+                return Button.DOWN;
+            } else if (event.getPin().getName().equalsIgnoreCase(RaspiPin.GPIO_00.getName())) {
+                return Button.CORNER;
+            }
         }
-        return null;
 
+        return null; 
     }
 }
-

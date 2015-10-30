@@ -41,7 +41,11 @@ public enum Button {
     /**
      * The down {@code Button}.
      */
-    DOWN("Down");
+    DOWN("Down"),
+    /**
+     * The corner {@code Button}. Only on revision two of the board.
+     */
+	CORNER("Corner");	
 
     private final String label;
 
